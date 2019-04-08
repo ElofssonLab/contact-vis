@@ -4,11 +4,11 @@ import sys
 import argparse
 import matplotlib.pyplot as plt
 
-from contactvis.plot_contact_map import get_min_dist
-from contactvis.plot_contact_map import get_heavy_contacts
-from contactvis.plot_contact_map import get_cb_contacts
-from contactvis.plot_contact_map import get_ppvs
-from contactvis.plot_contact_map import get_tp_colors
+# from contactvis.plot_contact_map import get_min_dist
+# from contactvis.plot_contact_map import get_heavy_contacts
+# from contactvis.plot_contact_map import get_cb_contacts
+# from contactvis.plot_contact_map import get_ppvs
+# from contactvis.plot_contact_map import get_tp_colors
 from contactvis.plot_contact_map import plot_map
 
 # import matplotlib
