@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
 
 def vertical(hfile):
 
@@ -24,7 +25,7 @@ def horizontal(hfile):
     @param  hfile   psipred .horiz file
     @return secondary structure string.
     """
-    
+
     result = ''
     for line in hfile:
         line_arr = line.strip().split(' ')
@@ -39,7 +40,7 @@ def horizontal_conf(hfile):
     @param  hfile   psipred .horiz file
     @return secondary structure string.
     """
-    
+
     result = ''
     for line in hfile:
         line_arr = line.strip().split(' ')

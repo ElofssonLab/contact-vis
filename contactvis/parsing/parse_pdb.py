@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import sys
 import operator
 import numpy as np
@@ -19,7 +20,7 @@ def parse_atm_record(line):
     record['z'] = float(line[46:54])
     record['occ'] = float(line[54:60])
     record['B'] = float(line[60:66])
-    
+
     return record
 
 
@@ -33,7 +34,7 @@ def read(pdbfile):
     seen_atoms = False
     curr_resi = 0
     prev_resi = 0
-    
+
     for line in pdbfile:
         if not line.startswith('ATOM') and not seen_atoms:
             header += line
@@ -49,12 +50,12 @@ def read(pdbfile):
             if curr_resi == prev_resi:
                 atm_lst.append(line)
             else:
-                #atm_lst.append(line)
+                # atm_lst.append(line)
                 res_lst.append(atm_lst)
                 atm_lst = [line]
             prev_resi = curr_resi
     res_lst.append(atm_lst)
-     
+
     pdbfile.close()
     pdb_lst = [header, res_lst, tail]
     return pdb_lst
@@ -67,7 +68,7 @@ def write(pdb_lst, outfile):
     for res in pdb_lst[1]:
         for atm in res:
             outfile.write(atm)
-            
+
     outfile.write(pdb_lst[2])
     outfile.close()
 
@@ -122,9 +123,9 @@ def get_coordinates(pdbfile, chain):
         """
 
         res_dict[res_i].append(np.array(atm))
-        
+
     pdbfile.close()
-    return sorted(res_dict.iteritems(), key=operator.itemgetter(0))
+    return sorted(res_dict.items(), key=operator.itemgetter(0))
 
 
 def get_cb_coordinates(pdbfile, chain):
@@ -145,18 +146,18 @@ def get_cb_coordinates(pdbfile, chain):
             continue
 
         res_i = atm_record['res_no']
-        
+
         atm = [float('inf'), float('inf'), float('inf')]
 
         if atm_record['atm_name'] == 'CA':
                 atm = [atm_record['x'], atm_record['y'], atm_record['z']]
-                res_dict[res_i].append(np.array(atm))    
+                res_dict[res_i].append(np.array(atm))
         elif atm_record['atm_name'] == 'CB':
                 atm = [atm_record['x'], atm_record['y'], atm_record['z']]
-                res_dict[res_i].append(np.array(atm))  
-        
+                res_dict[res_i].append(np.array(atm))
+
     cb_lst = []
-    num_res = len(res_dict)+2
+    # num_res = len(res_dict)+2
     tmp_i = 0
     for i in res_dict.keys():
         if len(res_dict[i]) > 1:
@@ -165,16 +166,21 @@ def get_cb_coordinates(pdbfile, chain):
         elif len(res_dict[i]) == 1:
             tmp_i += 1
             cb_lst.append(res_dict[i][0])
-    #print atm_count 
+    # print atm_count
     pdbfile.close()
     return cb_lst
 
 
 def get_atom_seq(pdbfile, chain):
 
-    three_to_one = {'ARG':'R', 'HIS':'H', 'LYS':'K', 'ASP':'D', 'GLU':'E', 'SER':'S', 'THR':'T', 'ASN':'N', 'GLN':'Q', 'CYS':'C', 'GLY':'G', 'PRO':'P', 'ALA':'A', 'ILE':'I', 'LEU':'L', 'MET':'M', 'PHE':'F', 'TRP':'W', 'TYR':'Y', 'VAL':'V', 'UNK': 'X'}
+    three_to_one = {'ARG': 'R', 'HIS': 'H', 'LYS': 'K', 'ASP': 'D',
+                    'GLU': 'E', 'SER': 'S', 'THR': 'T', 'ASN': 'N',
+                    'GLN': 'Q', 'CYS': 'C', 'GLY': 'G', 'PRO': 'P',
+                    'ALA': 'A', 'ILE': 'I', 'LEU': 'L', 'MET': 'M',
+                    'PHE': 'F', 'TRP': 'W', 'TYR': 'Y', 'VAL': 'V',
+                    'UNK': 'X'}
     res_dict = {}
- 
+
     if not chain:
         chain = get_first_chain(pdbfile)
         pdbfile.seek(0)
@@ -188,22 +194,22 @@ def get_atom_seq(pdbfile, chain):
             continue
 
         res_i = atm_record['res_no']
-        
+
         if atm_record['insert'] == 'X':
             res_i = res_i * 0.001
-         
-        #print atm_record['res_name']
+
+        # print atm_record['res_name']
         if atm_record['res_name'] in three_to_one:
-            #res_name = three_to_one[atm_record['res_name']]
-            #print res_name
+            # res_name = three_to_one[atm_record['res_name']]
+            # print res_name
             res_name = three_to_one[atm_record['res_name']]
-        #else:
-            #res_name = ''
-            #continue
+        # else:
+            # res_name = ''
+            # continue
 
         res_dict[res_i] = res_name
 
-    res_lst = sorted(res_dict.iteritems(), key=operator.itemgetter(0))
+    res_lst = sorted(res_dict.items(), key=operator.itemgetter(0))
     atom_seq = ''
 
     for res in res_lst:
@@ -222,16 +228,14 @@ def get_first_chain(pdbfile):
         break
 
     return atm_record['chain']
- 
-
 
 
 if __name__ == '__main__':
 
     pdbfile = open(sys.argv[1], 'r')
     chain = sys.argv[2]
-    #print get_atom_seq(pdbfile, chain)
+    print(get_atom_seq(pdbfile, chain))
     pdbfile.close()
-    #pdbfile = open(sys.argv[1], 'r')
-    #print get_coordinates(pdbfile)
-    #pdbfile.close()
+    pdbfile = open(sys.argv[1], 'r')
+    print(get_coordinates(pdbfile, chain))
+    pdbfile.close()
