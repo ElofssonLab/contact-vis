@@ -356,6 +356,7 @@ if __name__ == "__main__":
 
     fasta_filename = args['fasta_file']
     c_filename = args['contact_file']
+    c2_filename = c2_filename = args['c2']
     psipred_filename = args['psipred_horiz']
 
     # guessing separator of constraint file
@@ -367,10 +368,22 @@ if __name__ == "__main__":
     else:
         sep = '\t'
 
+    # guessing separator of constraint file
+    sep2 = ','
+    if c2_filename:
+        line = open(c2_filename, 'r').readline()
+        if len(line.split(',')) != 1:
+            sep2 = ','
+        elif len(line.split(' ')) != 1:
+            sep2 = ' '
+        else:
+            sep2 = '\t'
+
     plot_map(args['fasta_file'],
              args['contact_file'],
              args['factor'],
-             c2_filename=args['c2'], ss_fname=args['ss_file'],
+             c2_filename=args['c2'],
+             ss_fname=args['ss_file'],
              psipred_horiz_fname=args['psipred_horiz'],
              psipred_vert_fname=args['psipred_vert'],
              pdb_filename=args['pdb'],
